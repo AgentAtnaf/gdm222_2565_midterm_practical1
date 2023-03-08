@@ -15,16 +15,34 @@ public class Fractal : MonoBehaviour
 
     void Start()
     {
-        //  This statement create a game object given a prefab, position and rotation.
-        Instantiate(
-            //  This parameter sets a prefab for an instance to be created.
-            cubePrefab,
+        CreateMengerSponge((iteration-1), Vector3.zero, size*10);
+    }
 
-            //  This parameter sets an instance position to (0, 0, 0).
-            Vector3.zero,
-
-            //  This parameter sets an instance rotation to (0, 0, 0).
-            Quaternion.identity
-        );
+    private void CreateMengerSponge(int level, Vector3 position, float scale)
+    {
+        if (level == 0)
+        {
+            GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
+            cube.transform.localScale = Vector3.one * scale;
+        }
+        else
+        {
+            float newScale = scale/3f;
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    for (int k = -1; k <= 1; k++)
+                    {
+                        if (Mathf.Abs(i) + Mathf.Abs(j) + Mathf.Abs(k) > 1)
+                        {
+                            Vector3 offset = new Vector3(i, j, k) * newScale;
+                            CreateMengerSponge(level - 1, position + offset, newScale);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
+
